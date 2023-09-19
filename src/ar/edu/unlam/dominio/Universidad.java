@@ -87,14 +87,14 @@ public class Universidad {
 		return true;
 	}
 	
-	public Boolean agregarDocente(Profesor profesor) {
-		if (buscarDocentePorDni(profesor.getDni()) == null) {
+	public Boolean agregarProfesor(Profesor profesor) {
+		if (buscarProfesorPorDni(profesor.getDni()) == null) {
 			return this.profesores.add(profesor);
 		} 
 		return false;
 	}
 
-	private Profesor buscarDocentePorDni(Integer dni) {
+	private Profesor buscarProfesorPorDni(Integer dni) {
 		for (int i = 0; i < profesores.size(); i++) {
 			if (this.profesores.get(i).getDni().equals(dni)) {
 				return this.profesores.get(i); 
@@ -103,17 +103,22 @@ public class Universidad {
 		return null;
 	}
 	
-	public Boolean asignarDocentesAComision(Integer idComision, Integer dniDocente) {
+	public Boolean asignarProfesoresAComision(Integer idComision, Integer dniProfesor) {
 		
-		if(existeDocente(dniDocente) && existeComision(idComision)) {
+		if(existeProfesor(dniProfesor) && existeComision(idComision)) {
+			-
 		}
 		
 		return false;
 		
 	}
 	
-	public boolean existeDocente(Integer dniDocente) { 
-		return this.profesores.contains(dniDocente);
+	public static Integer obtenerCantidadAlumnos(ArrayList<Alumno> alumnos) {
+		return alumnos.size();
+	}
+	
+	public boolean existeProfesor(Integer dniProfesor) { 
+		return this.profesores.contains(dniProfesor);
 	}
 	
 	public boolean existeComision(Integer idComision) { 

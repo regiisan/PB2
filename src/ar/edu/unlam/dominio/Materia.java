@@ -43,6 +43,24 @@ public class Materia {
 		this.aula = aula;
 	}
 
+	public boolean agregarCorrelativa (Integer idCorrelativa) {
+		for(Materia correlativa : correlativas) {
+		if(correlativa.getCodigo().equals(idCorrelativa)) {
+			return false;
+		}
+	}
+		return correlativas.add(new Materia(" ", idCorrelativa));
+	}
+	
+	public boolean eliminarCorrelativa(Integer idCorrelativa) {
+		if(correlativas.contains(idCorrelativa)) {
+			correlativas.remove(idCorrelativa);
+			return true;
+		}
+		return false;
+	}
+	
+	
 	public ArrayList<Materia> getCorrelativas() {
 		return correlativas;
 	}
