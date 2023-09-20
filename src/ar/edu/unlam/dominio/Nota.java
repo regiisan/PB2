@@ -2,22 +2,29 @@ package ar.edu.unlam.dominio;
 
 public class Nota {
 
-	private int valor;
+	private Integer nota;
+	private TipoParcial tipoParcial;
 
 	public Nota() {
 
 	}
 
-	public Nota(int valor) {
-		this.valor = valor;
+	public Integer getNota() {
+		return nota;
 	}
 
-	public int getValor() {
-		return valor;
+	public void setNota(Integer nota) {
+		this.nota = nota;
 	}
 
-	public void setValor(int valor) {
-		this.valor = valor;
+	public TipoParcial getTipoParcial() {
+		return tipoParcial;
 	}
+
+	public void setTipoParcial(TipoParcial tipoParcial) {
+		this.tipoParcial = tipoParcial;
+	}
+	
+	
 
 }

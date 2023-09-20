@@ -45,7 +45,7 @@ public class Inscripcion {
 			return false;
 		}
 
-		if (this.nota.getValor() < 4) {
+		if (this.nota.getNota() < 4) {
 			return false;
 		}
 

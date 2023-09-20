@@ -12,6 +12,8 @@ public class Universidad {
 	private ArrayList<Profesor> profesores;
 	private ArrayList<Comision> comisiones;
 	private ArrayList<CicloLectivo> ciclos;
+//	private ArrayList<CursoAlumno> cursoAlumno;
+//	private ArrayList<CursoProfesor> cursoProfesor;
 
 	public Universidad(String nombre) {
 		this.nombre = nombre;
@@ -36,7 +38,7 @@ public class Universidad {
 		return null;
 	}
 
-	public boolean existeAlumno(Alumno buscado) { // ver 
+	public boolean existeAlumno(Alumno buscado) { // ver
 		return this.alumnos.contains(buscado);
 	}
 
@@ -56,23 +58,15 @@ public class Universidad {
 		return null;
 	}
 
-
-<<<<<<< HEAD
 	public Boolean agregarCicloLectivo(Integer id, CicloLectivo ciclo) {
-		if(ciclo.seSuperpone(ciclo)) {
+		if (ciclo.seSuperpone(ciclo)) {
 			return false;
 		}
-		if(buscarCicloPorId(id) != null) {
+		if (buscarCicloPorId(id) != null) {
 			return false;
 		}
 		return true;
-=======
-	public Boolean agregarCicloLectivo(CicloLectivo ciclo) {
-		return false;
->>>>>>> b43ee8578d91e2510caaec38fa8f4181b5fd49ec
 	}
-	
-	
 
 	private CicloLectivo buscarCicloPorId(Integer id) {
 		for (int i = 0; i < ciclos.size(); i++) {
@@ -82,69 +76,80 @@ public class Universidad {
 		}
 		return null;
 	}
-	
+
 	public Boolean agregarComision(Comision comision) {
-			if(sePuedeAgregarComision(null, null, nombre)) {
+		if (sePuedeAgregarComision(comision)) {
 			return this.comisiones.add(comision);
 		}
+		return false;
+	}
+
+	private boolean sePuedeAgregarComision(Comision comision) {
+		if (buscarComisionPorId(comision.getId()) == null) {
 			return false;
 		}
-	
-	private boolean sePuedeAgregarComision(Materia materia, CicloLectivo cicloLectivo, String turno) {
-		for(int i = 0; i<comisiones.size();i++) {
-			if(this.comisiones.get(i).getMateria().equals(materia) && this.comisiones.get(i).getCicloLectivo().equals(cicloLectivo) && this.comisiones.get(i).getTurno().equals(turno)) {
+		
+		for (int i = 0; i < comisiones.size(); i++) {
+			if (this.comisiones.get(i).getMateria().equals(comision.getMateria())
+					&& this.comisiones.get(i).getCicloLectivo().equals(comision.getCicloLectivo())
+					&& this.comisiones.get(i).getTurno().equals(comision.getTurno())) {
 				return false;
 			}
-	}
+		}
 		return true;
 	}
-	
+
+	private Comision buscarComisionPorId(Integer id) {
+		for (int i = 0; i < comisiones.size(); i++) {
+			if (this.comisiones.get(i).getId().equals(id)) {
+				return this.comisiones.get(i);
+			} // hashcode
+		}
+		return null;
+	}
+
 	public Boolean agregarProfesor(Profesor profesor) {
 		if (buscarProfesorPorDni(profesor.getDni()) == null) {
 			return this.profesores.add(profesor);
-		} 
+		}
 		return false;
 	}
 
 	private Profesor buscarProfesorPorDni(Integer dni) {
 		for (int i = 0; i < profesores.size(); i++) {
 			if (this.profesores.get(i).getDni().equals(dni)) {
-				return this.profesores.get(i); 
+				return this.profesores.get(i);
 			} // hashcode
 		}
 		return null;
 	}
-	
+
 	public Boolean asignarProfesoresAComision(Integer idComision, Integer dniProfesor) {
-		
-		if(existeProfesor(dniProfesor) && existeComision(idComision)) {
-<<<<<<< HEAD
-			
-=======
->>>>>>> b43ee8578d91e2510caaec38fa8f4181b5fd49ec
+
+		if (existeProfesor(dniProfesor) && existeComision(idComision)) {
 		}
-		
+
 		return false;
-		
+
 	}
-	
+
 	public static Integer obtenerCantidadAlumnos(ArrayList<Alumno> alumnos) {
 		return alumnos.size();
 	}
-	
-	public boolean existeProfesor(Integer dniProfesor) { 
+
+	public boolean existeProfesor(Integer dniProfesor) {
 		return this.profesores.contains(dniProfesor);
 	}
-	
-	public boolean existeComision(Integer idComision) { 
+
+	public boolean existeComision(Integer idComision) {
 		return this.comisiones.contains(idComision);
 	}
 
-	public Boolean inscribirAlumnoAMateria(Integer dni, Integer codigo) {
+	public Boolean inscribirAlumnoAComision(Integer dni, Integer id) {
 		Alumno alumno = buscarAlumnoPorDni(dni);
-		Materia materia = buscarMateriaPorCodigo(codigo);
+		Comision comision = buscarComisionPorId(id);
 
-		if (alumno == null || materia == null) {
+		if (alumno == null || comision == null) {
 			return false;
 		}
 		// Hacer
