@@ -12,8 +12,8 @@ public class Universidad {
 	private ArrayList<Profesor> profesores;
 	private ArrayList<Comision> comisiones;
 	private ArrayList<CicloLectivo> ciclos;
-//	private ArrayList<CursoAlumno> cursoAlumno;
-//	private ArrayList<CursoProfesor> cursoProfesor;
+	private ArrayList<ComisionAlumno> cursoAlumno;
+	private ArrayList<ComisionProfesor> cursoProfesor;
 
 	public Universidad(String nombre) {
 		this.nombre = nombre;
@@ -126,8 +126,11 @@ public class Universidad {
 
 	public Boolean asignarProfesoresAComision(Integer idComision, Integer dniProfesor) {
 
-		if (existeProfesor(dniProfesor) && existeComision(idComision)) {
+		if (!existeProfesor(dniProfesor) || !existeComision(idComision)) {
+		 return false;
 		}
+		
+		ArrayList<ComisionAlumno> comisionAlumno = comisionAlumno
 
 		return false;
 
@@ -146,8 +149,12 @@ public class Universidad {
 	}
 
 	public Boolean inscribirAlumnoAComision(Integer dni, Integer id) {
+		
 		Alumno alumno = buscarAlumnoPorDni(dni);
 		Comision comision = buscarComisionPorId(id);
+		
+		Integer cantidadDeLugaresMaximos = comision.getAula().getCantidadDeLugares();
+		Integer cantidadDeInscripos = null;
 
 		if (alumno == null || comision == null) {
 			return false;
@@ -173,14 +180,14 @@ public class Universidad {
 		return null;
 	}
 
-	public Boolean asignarAulaAMateria(Integer codigoMateria, Integer idAula) {
+	public Boolean asignarAulaAComision(Integer idComision, Integer idAula) {
 
-		Materia materia = buscarMateriaPorCodigo(codigoMateria);
-		Aula aula = obtenerAulaPorId(idAula);
 		Boolean asignado = false;
+		Comision comision = buscarComisionPorId(idComision);
+		Aula aula = obtenerAulaPorId(idAula);
 
-		if (materia != null && aula != null) {
-			materia.asignarAula(aula);
+		if (comision != null && aula != null) {
+			comision.setAula(aula);
 			asignado = true;
 		}
 		return asignado;

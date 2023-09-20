@@ -8,6 +8,7 @@ public class Comision {
 	private Integer id;
 	private Materia materia;
 	private CicloLectivo cicloLectivo;
+	private Aula aula;
 //	private ArrayList<Examen> examenes;
 	private String turno;
 	
@@ -33,6 +34,15 @@ public class Comision {
 	public void setCicloLectivo(CicloLectivo cicloLectivo) {
 		this.cicloLectivo = cicloLectivo;
 	}
+	
+	public Aula getAula() {
+		return aula;
+	}
+
+	public void setAula(Aula aula) {
+		this.aula = aula;
+	}
+
 	public String getTurno() {
 		return turno;
 	}

@@ -6,7 +6,7 @@ public class Materia {
 
 	private String nombre;
 	private Integer codigo;
-	private Aula aula;
+//	private Aula aula;
 	private ArrayList<Materia> correlativas;
 
 	public Materia(String nombre, Integer codigo) {
@@ -31,17 +31,17 @@ public class Materia {
 		this.codigo = codigo;
 	}
 
-	public Aula getAula() {
-		return aula;
-	}
-
-	public void setAula(Aula aula) {
-		this.aula = aula;
-	}
-
-	public void asignarAula(Aula aula) {
-		this.aula = aula;
-	}
+//	public Aula getAula() {
+//		return aula;
+//	}
+//
+//	public void setAula(Aula aula) {
+//		this.aula = aula;
+//	}
+//
+//	public void asignarAula(Aula aula) {
+//		this.aula = aula;
+//	}
 
 	public boolean agregarCorrelativa (Integer idCorrelativa) {
 		for(Materia correlativa : correlativas) {
