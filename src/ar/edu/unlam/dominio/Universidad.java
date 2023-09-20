@@ -57,9 +57,14 @@ public class Universidad {
 	}
 
 
-	public Boolean agregarCicloLectivo(CicloLectivo ciclo) {
-
-		return false;
+	public Boolean agregarCicloLectivo(Integer id, CicloLectivo ciclo) {
+		if(ciclo.seSuperpone(ciclo)) {
+			return false;
+		}
+		if(buscarCicloPorId(id) != null) {
+			return false;
+		}
+		return true;
 	}
 
 	private CicloLectivo buscarCicloPorId(Integer id) {
@@ -106,7 +111,7 @@ public class Universidad {
 	public Boolean asignarProfesoresAComision(Integer idComision, Integer dniProfesor) {
 		
 		if(existeProfesor(dniProfesor) && existeComision(idComision)) {
-			-
+			
 		}
 		
 		return false;
