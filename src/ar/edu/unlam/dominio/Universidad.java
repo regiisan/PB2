@@ -57,6 +57,7 @@ public class Universidad {
 	}
 
 
+<<<<<<< HEAD
 	public Boolean agregarCicloLectivo(Integer id, CicloLectivo ciclo) {
 		if(ciclo.seSuperpone(ciclo)) {
 			return false;
@@ -65,7 +66,13 @@ public class Universidad {
 			return false;
 		}
 		return true;
+=======
+	public Boolean agregarCicloLectivo(CicloLectivo ciclo) {
+		return false;
+>>>>>>> b43ee8578d91e2510caaec38fa8f4181b5fd49ec
 	}
+	
+	
 
 	private CicloLectivo buscarCicloPorId(Integer id) {
 		for (int i = 0; i < ciclos.size(); i++) {
@@ -111,7 +118,10 @@ public class Universidad {
 	public Boolean asignarProfesoresAComision(Integer idComision, Integer dniProfesor) {
 		
 		if(existeProfesor(dniProfesor) && existeComision(idComision)) {
+<<<<<<< HEAD
 			
+=======
+>>>>>>> b43ee8578d91e2510caaec38fa8f4181b5fd49ec
 		}
 		
 		return false;
