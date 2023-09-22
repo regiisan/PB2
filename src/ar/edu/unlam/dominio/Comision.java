@@ -9,11 +9,14 @@ public class Comision {
 	private Materia materia;
 	private CicloLectivo cicloLectivo;
 	private Aula aula;
-//	private ArrayList<Examen> examenes;
 	private String turno;
 	
 	public Comision(Integer id, Materia materia, CicloLectivo cicloLectivo) {
-		
+		this.id = id;
+		this.materia = materia;
+		this.cicloLectivo = cicloLectivo;
+		this.aula = aula;
+		this.turno = turno;
 	}
 	
 	public Integer getId() {

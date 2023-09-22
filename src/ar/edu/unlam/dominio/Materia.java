@@ -1,18 +1,16 @@
 package ar.edu.unlam.dominio;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Materia {
 
 	private String nombre;
-	private Integer codigo;
-//	private Aula aula;
-	private ArrayList<Materia> correlativas;
+	private Integer id;
 
 	public Materia(String nombre, Integer codigo) {
 		this.nombre = nombre;
-		this.codigo = codigo;
-		this.correlativas = new ArrayList<>();
+		this.id = codigo;
 	}
 
 	public String getNombre() {
@@ -24,49 +22,36 @@ public class Materia {
 	}
 
 	public Integer getCodigo() {
-		return codigo;
+		return id;
 	}
 
 	public void setCodigo(Integer codigo) {
-		this.codigo = codigo;
+		this.id = codigo;
 	}
 
-//	public Aula getAula() {
-//		return aula;
-//	}
-//
-//	public void setAula(Aula aula) {
-//		this.aula = aula;
-//	}
-//
-//	public void asignarAula(Aula aula) {
-//		this.aula = aula;
-//	}
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
 
-	public boolean agregarCorrelativa (Integer idCorrelativa) {
-		for(Materia correlativa : correlativas) {
-		if(correlativa.getCodigo().equals(idCorrelativa)) {
-			return false;
-		}
-	}
-		return correlativas.add(new Materia(" ", idCorrelativa));
-	}
-	
-	public boolean eliminarCorrelativa(Integer idCorrelativa) {
-		if(correlativas.contains(idCorrelativa)) {
-			correlativas.remove(idCorrelativa);
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
 			return true;
-		}
-		return false;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Materia other = (Materia) obj;
+		return Objects.equals(id, other.id);
 	}
 	
 	
-	public ArrayList<Materia> getCorrelativas() {
-		return correlativas;
-	}
-
-	public void setCorrelativas(ArrayList<Materia> correlativas) {
-		this.correlativas = correlativas;
-	}
-
+//	public boolean eliminarCorrelativa(Integer idCorrelativa) {
+//		if(correlativas.contains(idCorrelativa)) {
+//			correlativas.remove(idCorrelativa);
+//			return true;
+//		}
+//		return false;
+//	}
 }
