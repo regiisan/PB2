@@ -47,11 +47,11 @@ public class ComisionAlumno {
 		}
 		
 		if (primerParcial.getValor() < 4) {
-			primerParcial = buscarNotaPorTipo(TipoDeNota.RECU_PRIMER_PARCIAL);
+			primerParcial = buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_PRIMER_PARCIAL);
 		}
 		
 		if (segundoParcial.getValor() < 4) {
-			segundoParcial = buscarNotaPorTipo(TipoDeNota.RECU_SEGUNDO_PARCIAL);
+			segundoParcial = buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_SEGUNDO_PARCIAL);
 		}
 		
 		if (primerParcial == null || segundoParcial == null) {

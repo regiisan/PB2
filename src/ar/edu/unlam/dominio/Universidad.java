@@ -61,14 +61,14 @@ public class Universidad {
 		return null;
 	}
 
-	public Boolean agregarCicloLectivo(Integer id, CicloLectivo ciclo) {
-		if (ciclo.seSuperpone(ciclo)) {
+	public Boolean agregarCicloLectivo(CicloLectivo ciclo) {
+		if (buscarCicloPorId(ciclo.getId()) != null) {
 			return false;
 		}
-		if (buscarCicloPorId(id) != null) {
+		if (seSuperponen(ciclo)) {
 			return false;
 		}
-		return true;
+		return this.ciclos                    .add(ciclo);
 	}
 
 	private CicloLectivo buscarCicloPorId(Integer id) {
@@ -78,6 +78,15 @@ public class Universidad {
 			}
 		}
 		return null;
+	}
+	
+	public Boolean seSuperponen(CicloLectivo ciclo) {
+		for(int i = 0;i<this.ciclos.size();i++) {
+			if(ciclos.get(i).getFechaInicioCicloLectivo().isBefore(ciclo.getFechaFinalizacionCicloLectivo())||ciclos.get(i).getFechaFinalizacionCicloLectivo().isAfter(ciclo.getFechaInicioCicloLectivo())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public Boolean agregarComision(Comision comision) {
@@ -178,7 +187,7 @@ public class Universidad {
 
 		if (comision != null && aula != null) {
 			comision.setAula(aula);
-			asignado = true;
+			asignado = true; // 
 		}
 		return asignado;
 	}
@@ -211,7 +220,6 @@ public class Universidad {
 				idCorrelativas.add(buscarMateriaPorCodigo(materiasCorrelativas.get(i).getIdCorrelativa()));
 			}
 		}
-
 		return idCorrelativas;
 	}
 
@@ -226,7 +234,7 @@ public class Universidad {
 		Integer cantidadDeLugaresMaximos = comision.getAula().getCantidadDeLugares();
 		Integer cantidadDeInscripos = obtenerCantidadDeInscriptosDeUnaComision(idComision);
 
-		if (cantidadDeLugaresMaximos >= cantidadDeInscripos) {
+		if (cantidadDeLugaresMaximos.equals(cantidadDeInscripos)) {
 			return false;
 		}
 
@@ -239,10 +247,10 @@ public class Universidad {
 		}
 
 		for (int i = 0; i < comisionesAlumno.size(); i++) {
-			ComisionAlumno comisionAl = comisionesAlumno.get(i);
+			ComisionAlumno comisionAlumno = comisionesAlumno.get(i);
 
-			if (comisionAl.getDniAlumno().equals(dniAlumno)) {
-				if (buscarComisionPorId(comisionAl.getIdComision()).getTurno().equals(comision.getTurno())) {
+			if (comisionAlumno.getDniAlumno().equals(dniAlumno)) {
+				if (buscarComisionPorId(comisionAlumno.getIdComision()).getTurno().equals(comision.getTurno())) {
 					return false;
 				}
 			}
@@ -268,7 +276,6 @@ public class Universidad {
 				resultado.add(comisionesAlumno.get(i));
 			}
 		}
-
 		return resultado;
 	}
 
@@ -298,10 +305,10 @@ public class Universidad {
 			return false;
 		}
 
-		if (TipoDeNota.RECU_PRIMER_PARCIAL.equals(nota.getTipoDeNota())
-				|| TipoDeNota.RECU_SEGUNDO_PARCIAL.equals(nota.getTipoDeNota())) {
-			if (comisionAlumno.buscarNotaPorTipo(TipoDeNota.RECU_PRIMER_PARCIAL) != null
-					|| comisionAlumno.buscarNotaPorTipo(TipoDeNota.RECU_SEGUNDO_PARCIAL) != null) {
+		if (TipoDeNota.RECUPERATORIO_PRIMER_PARCIAL.equals(nota.getTipoDeNota())
+				|| TipoDeNota.RECUPERATORIO_SEGUNDO_PARCIAL.equals(nota.getTipoDeNota())) {
+			if (comisionAlumno.buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_PRIMER_PARCIAL) != null
+					|| comisionAlumno.buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_SEGUNDO_PARCIAL) != null) {
 				return false;
 			}
 		}
