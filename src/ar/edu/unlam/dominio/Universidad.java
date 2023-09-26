@@ -23,7 +23,14 @@ public class Universidad {
 		this.nombre = nombre;
 		this.alumnos = new ArrayList<Alumno>();
 		this.materias = new ArrayList<Materia>();
+		this.profesores = new ArrayList<Profesor>();
 		this.aulas = new ArrayList<Aula>();
+		this.ciclos = new ArrayList<CicloLectivo>();
+		this.comisiones = new ArrayList<Comision>();
+		this.comisionesAlumno = new ArrayList<ComisionAlumno>();
+		this.comisionesProfesor = new ArrayList<ComisionProfesor>();
+		this.materiasCorrelativas = new ArrayList<MateriaCorrelativa>();
+
 	}
 
 	public Boolean agregarAlumno(Alumno alumno) {
@@ -69,7 +76,7 @@ public class Universidad {
 		if (seSuperponen(ciclo)) {
 			return false;
 		}
-		return this.ciclos                    .add(ciclo);
+		return this.ciclos.add(ciclo);
 	}
 
 	private CicloLectivo buscarCicloPorId(Integer id) {
@@ -80,10 +87,11 @@ public class Universidad {
 		}
 		return null;
 	}
-	
+
 	public Boolean seSuperponen(CicloLectivo ciclo) {
-		for(int i = 0;i<this.ciclos.size();i++) {
-			if(ciclos.get(i).getFechaInicioCicloLectivo().isBefore(ciclo.getFechaFinalizacionCicloLectivo())||ciclos.get(i).getFechaFinalizacionCicloLectivo().isAfter(ciclo.getFechaInicioCicloLectivo())) {
+		for (int i = 0; i < this.ciclos.size(); i++) {
+			if (ciclos.get(i).getFechaInicioCicloLectivo().isBefore(ciclo.getFechaFinalizacionCicloLectivo())
+					|| ciclos.get(i).getFechaFinalizacionCicloLectivo().isAfter(ciclo.getFechaInicioCicloLectivo())) {
 				return true;
 			}
 		}
@@ -98,7 +106,7 @@ public class Universidad {
 	}
 
 	private boolean sePuedeAgregarComision(Comision comision) {
-		if (buscarComisionPorId(comision.getId()) == null) {
+		if (buscarComisionPorId(comision.getId()) != null) {
 			return false;
 		}
 		for (int i = 0; i < comisiones.size(); i++) {
@@ -110,12 +118,12 @@ public class Universidad {
 		}
 		return true;
 	}
-	
+
 	public boolean existeComision(Integer idComision) {
 		return this.comisiones.contains(idComision);
 	}
 
-	private Comision buscarComisionPorId(Integer id) {
+	public Comision buscarComisionPorId(Integer id) {
 		for (int i = 0; i < comisiones.size(); i++) {
 			if (this.comisiones.get(i).getId().equals(id)) {
 				return this.comisiones.get(i);
@@ -139,7 +147,7 @@ public class Universidad {
 		}
 		return null;
 	}
-	
+
 	public boolean existeProfesor(Integer dniProfesor) {
 		return this.profesores.contains(dniProfesor);
 	}
@@ -148,8 +156,6 @@ public class Universidad {
 		if (!existeProfesor(dniProfesor) || !existeComision(idComision)) {
 			return false;
 		}
-		
-		
 		for (int i = 0; i < this.comisionesProfesor.size(); i++) {
 			if (comisionesProfesor.get(i).getDniProfesor().equals(dniProfesor)) {
 				if (buscarComisionPorId(idComision).equals(comisionesProfesor.get(i).getIdComision()))
@@ -157,8 +163,6 @@ public class Universidad {
 			}
 		}
 		return this.comisionesProfesor.add(new ComisionProfesor(idComision, dniProfesor));
-		
-
 	}
 
 	public static Integer obtenerCantidadAlumnos(ArrayList<Alumno> alumnos) {
@@ -215,7 +219,7 @@ public class Universidad {
 
 		if (comision != null && aula != null) {
 			comision.setAula(aula);
-			asignado = true; // 
+			asignado = true; 
 		}
 		return asignado;
 	}
@@ -237,7 +241,14 @@ public class Universidad {
 		if (materia == null || correlativa == null) {
 			return false;
 		}
-		return this.materiasCorrelativas.remove(correlativa); // ver
+
+		for (int i = 0; i < materiasCorrelativas.size(); i++) {
+			if (materiasCorrelativas.get(i).getIdCorrelativa().equals(idCorrelativaAEliminar)) {
+				materiasCorrelativas.remove(i);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private ArrayList<Materia> buscarMateriasCorrelativas(Integer idMateria) {
@@ -322,7 +333,7 @@ public class Universidad {
 
 		for (int i = 0; i < comisionesAlumno.size(); i++) {
 			if (comisionesAlumno.get(i).getIdComision().equals(idComision)) {
-				cantidad++; // ver si no se hace infinito
+				cantidad++;
 			}
 		}
 		return cantidad;
@@ -365,38 +376,31 @@ public class Universidad {
 		ArrayList<Materia> materiasCorrelativas = buscarMateriasCorrelativas(comisionAprobada.getMateria().getCodigo());
 
 		return materiasAprobadas.containsAll(materiasCorrelativas);
-
-//		for(int i = 0; i < materiasCorrelativas.size(); i++) {
-//			Materia materiaCorrelativa = materiasCorrelativas.get(i);
-//			if(!materiasAprobadas.contains(materiaCorrelativa)) {
-//				return false;
-//			}
-//		}
-//		return true;
 	}
 
 	public Integer obtenerNotaFinal(Integer dniAlumno, Integer idComision) { 
+		
+		ComisionAlumno comisionDelAlumno = getInscripcionAcomision(dniAlumno, idComision);
+		Nota primerParcial = comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.PRIMER_PARCIAL);
+		Nota segundoParcial = comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.SEGUNDO_PARCIAL);
+
+		if (comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_PRIMER_PARCIAL).getValor() != null) {
+			primerParcial = comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_PRIMER_PARCIAL);
+		}
+		
+		if (comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_SEGUNDO_PARCIAL).getValor() != null) {
+			segundoParcial = comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_SEGUNDO_PARCIAL);
+		}
+
+		if (primerParcial.getValor() != null && segundoParcial.getValor() != null) {
+			Integer notaFinal = (primerParcial.getValor() + segundoParcial.getValor()) / 2;
+			return notaFinal;
+		}
+
+		return null;
+	}
         
-        ComisionAlumno comisionDelAlumno = getInscripcionAcomision(dniAlumno, idComision);
-        Nota primerParcial = comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.PRIMER_PARCIAL);
-        Nota segundoParcial = comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.SEGUNDO_PARCIAL);
 
-        if (comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_PRIMER_PARCIAL).getValor() != null) {
-            primerParcial = comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_PRIMER_PARCIAL);
-        }
-        
-        if (comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_SEGUNDO_PARCIAL).getValor() != null) {
-            segundoParcial = comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_SEGUNDO_PARCIAL);
-        }
-
-        if (primerParcial.getValor() != null && segundoParcial.getValor() != null) {
-            Integer notaFinal = (primerParcial.getValor() + segundoParcial.getValor()) / 2;
-            return notaFinal;
-        }
-
-        return null;
-    }
-	
 	public ArrayList<Materia> obtenerMateriasQueFaltanCursarParaUnAlumno(Integer dniAlumno) {
 		ArrayList<Materia> materiasAprobadasDelAlumno = obtenerMateriasAprobadasParaUnAlumno(dniAlumno);
 		ArrayList<Materia> materiasFaltantes = new ArrayList<>();
@@ -422,6 +426,7 @@ public class Universidad {
 			if (comisionesDelAlumno.get(i).isAprobada()) {
 				Comision comisionAprobada = buscarComisionPorId(comisionesDelAlumno.get(i).getIdComision());
 				materiasAprobadasDelAlumno.add(comisionAprobada.getMateria());
+		
 			}
 		}
 		return materiasAprobadasDelAlumno;

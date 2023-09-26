@@ -45,13 +45,4 @@ public class Materia {
 		Materia other = (Materia) obj;
 		return Objects.equals(id, other.id);
 	}
-	
-	
-//	public boolean eliminarCorrelativa(Integer idCorrelativa) {
-//		if(correlativas.contains(idCorrelativa)) {
-//			correlativas.remove(idCorrelativa);
-//			return true;
-//		}
-//		return false;
-//	}
 }

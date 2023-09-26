@@ -11,7 +11,7 @@ public class Comision {
 	private Aula aula;
 	private String turno;
 	
-	public Comision(Integer id, Materia materia, CicloLectivo cicloLectivo) {
+	public Comision(Integer id, Materia materia, CicloLectivo cicloLectivo, String turno) { // ver
 		this.id = id;
 		this.materia = materia;
 		this.cicloLectivo = cicloLectivo;
