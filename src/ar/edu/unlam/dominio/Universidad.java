@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 public class Universidad {
 
@@ -155,7 +156,6 @@ public class Universidad {
 		if (!existeProfesor(dniProfesor) || !existeComision(idComision)) {
 			return false;
 		}
-
 		for (int i = 0; i < this.comisionesProfesor.size(); i++) {
 			if (comisionesProfesor.get(i).getDniProfesor().equals(dniProfesor)) {
 				if (buscarComisionPorId(idComision).equals(comisionesProfesor.get(i).getIdComision()))
@@ -167,6 +167,32 @@ public class Universidad {
 
 	public static Integer obtenerCantidadAlumnos(ArrayList<Alumno> alumnos) {
 		return alumnos.size();
+	}
+	
+	public Integer obtenerCantidadAlumnosPorComision(Integer idComision) {
+		
+		Integer cantidadAlumnos = 0;
+        for (int i = 0; i < this.comisionesAlumno.size(); i++) {
+            if (comisionesAlumno.get(i).getIdComision().equals(idComision)) {
+                    cantidadAlumnos++;
+                    }
+            }
+        return cantidadAlumnos;
+	}
+	
+	public Boolean haceFaltaOtroProfesor(Integer idComision) {
+		
+		if(obtenerCantidadAlumnosPorComision(idComision) > 20) {
+			
+			Random random = new Random();
+	        int indiceAleatorio = random.nextInt(profesores.size());
+	        Profesor profesorAleatorio = profesores.get(indiceAleatorio);
+	        Integer dniAleatorio = profesorAleatorio.getDni();
+	        
+			asignarProfesorAComision(idComision, dniAleatorio);
+			return true;
+		}
+		return false;
 	}
 
 	public void agregarAula(Aula aula) {
@@ -193,7 +219,7 @@ public class Universidad {
 
 		if (comision != null && aula != null) {
 			comision.setAula(aula);
-			asignado = true; //
+			asignado = true; 
 		}
 		return asignado;
 	}
@@ -243,6 +269,9 @@ public class Universidad {
 		if (alumno == null || comision == null) {
 			return false;
 		}
+		
+		if(!tieneCorrelativasAprobadas(idComision, dniAlumno))
+			return false;
 
 		Integer cantidadDeLugaresMaximos = comision.getAula().getCantidadDeLugares();
 		Integer cantidadDeInscripos = obtenerCantidadDeInscriptosDeUnaComision(idComision);
@@ -268,6 +297,13 @@ public class Universidad {
 				}
 			}
 		}
+		
+		for(int i = 0; i <obtenerMateriasAprobadasParaUnAlumno(dniAlumno).size(); i++) {
+			if(obtenerMateriasAprobadasParaUnAlumno(dniAlumno).get(i).equals(comision.getMateria())){
+				return false;
+			}
+		}
+		
 		return this.comisionesAlumno.add(new ComisionAlumno(dniAlumno, idComision));
 	}
 
@@ -297,7 +333,7 @@ public class Universidad {
 
 		for (int i = 0; i < comisionesAlumno.size(); i++) {
 			if (comisionesAlumno.get(i).getIdComision().equals(idComision)) {
-				cantidad++; // ver si no se hace infinito
+				cantidad++;
 			}
 		}
 		return cantidad;
@@ -340,14 +376,6 @@ public class Universidad {
 		ArrayList<Materia> materiasCorrelativas = buscarMateriasCorrelativas(comisionAprobada.getMateria().getCodigo());
 
 		return materiasAprobadas.containsAll(materiasCorrelativas);
-
-//		for(int i = 0; i < materiasCorrelativas.size(); i++) {
-//			Materia materiaCorrelativa = materiasCorrelativas.get(i);
-//			if(!materiasAprobadas.contains(materiaCorrelativa)) {
-//				return false;
-//			}
-//		}
-//		return true;
 	}
 
 	public Integer obtenerNotaFinal(Integer dniAlumno, Integer idComision) { 
@@ -371,7 +399,25 @@ public class Universidad {
 
 		return null;
 	}
+        
 
+	public ArrayList<Materia> obtenerMateriasQueFaltanCursarParaUnAlumno(Integer dniAlumno) {
+		ArrayList<Materia> materiasAprobadasDelAlumno = obtenerMateriasAprobadasParaUnAlumno(dniAlumno);
+		ArrayList<Materia> materiasFaltantes = new ArrayList<>();
+		
+		Alumno alumno = buscarAlumnoPorDni(dniAlumno);
+		
+		if (alumno != null) {
+			for(Materia materia : materias) {
+			if(!materiasAprobadasDelAlumno.contains(materia)) {
+				materiasFaltantes.add(materia);
+				}
+			}
+		}
+		return materiasFaltantes;
+	}
+		
+	
 	public ArrayList<Materia> obtenerMateriasAprobadasParaUnAlumno(Integer dniAlumno) {
 		ArrayList<ComisionAlumno> comisionesDelAlumno = getInscripcionesAcomision(dniAlumno);
 		ArrayList<Materia> materiasAprobadasDelAlumno = new ArrayList<>();
@@ -385,4 +431,5 @@ public class Universidad {
 		}
 		return materiasAprobadasDelAlumno;
 	}
+
 }
