@@ -182,7 +182,7 @@ public class TestUniversidad {
 		// Validacion
 		assertFalse(registroNoExitoso);
 	}
-
+	
 	@Test
 	public void queSePuedaRegistrarUnaComision() {
 
@@ -201,24 +201,21 @@ public class TestUniversidad {
 		LocalDate fechaFinalizacionInscripcion = LocalDate.of(2023, 7, 30);
 		CicloLectivo ciclo = new CicloLectivo(idCiclo, fechaInicioCicloLectivo,fechaFinalizacionCicloLectivo,fechaInicioInscripcion,fechaFinalizacionInscripcion);
 		
-		Integer cantidadDeLugares = 50;
-		Integer id = 1;
-		Aula aula = new Aula(id, cantidadDeLugares);
-		
-		
 		Integer idComision = 1;
 		String turno = "mañana";
 		Comision comision = new Comision(idComision, pb2, ciclo, turno);
 
 		// Ejecucion
-		universidad.agregarMateria(pb2);
-		universidad.agregarCicloLectivo(ciclo);
-		universidad.agregarAula(aula);
-		Boolean registroExitoso = universidad.agregarComision(comision);
+		Boolean agregarMateria = universidad.agregarMateria(pb2);
+		Boolean agregarCiclo = universidad.agregarCicloLectivo(ciclo);
+		Boolean agregarComision = universidad.agregarComision(comision);
 
 		// Validacion
-		assertTrue(registroExitoso);
+		assertTrue(agregarMateria);
+		assertTrue(agregarCiclo);
+		assertTrue(agregarComision);
 	}
+	
 	@Test
 	public void queNoSePuedaRegistrarUnaComisionPorTenerElMismoCicloLectivoMateriaYturno() {
 
@@ -241,12 +238,10 @@ public class TestUniversidad {
 		Integer id = 1;
 		Aula aula = new Aula(id, cantidadDeLugares);
 		
-		
 		Integer idComision = 1;
 		String turno = "mañana";
 		Comision comision = new Comision(idComision, pb2, ciclo, turno);
 		Comision comision2 = new Comision(idComision, pb2, ciclo, turno);
-
 		
 		// Ejecucion
 		universidad.agregarMateria(pb2);
@@ -258,7 +253,111 @@ public class TestUniversidad {
 		// Validacion
 		assertFalse(registroExitoso);
 	}
+	
+	@Test
+	public void queSePuedaAsignarAulaAUnaComision() {
 
+		// Preparacion
+		String nombre = "Unlam";
+		Universidad universidad = new Universidad(nombre);
+		
+		String nombre2 = "PB2";
+		Integer codigo = 2;
+		Materia pb2 = new Materia(nombre2, codigo);
+		
+		Integer idCiclo = 1;
+		LocalDate fechaInicioCicloLectivo = LocalDate.of(2023, 8, 16);
+		LocalDate fechaFinalizacionCicloLectivo = LocalDate.of(2023, 12, 4);
+		LocalDate fechaInicioInscripcion = LocalDate.of(2023, 7, 25);
+		LocalDate fechaFinalizacionInscripcion = LocalDate.of(2023, 7, 30);
+		CicloLectivo ciclo = new CicloLectivo(idCiclo, fechaInicioCicloLectivo,fechaFinalizacionCicloLectivo,fechaInicioInscripcion,fechaFinalizacionInscripcion);
+		
+		Integer cantidadDeLugares = 50;
+		Integer idAula = 1;
+		Aula aula = new Aula(idAula, cantidadDeLugares);
+		
+		Integer idComision = 1;
+		String turno = "mañana";
+		Comision comision = new Comision(idComision, pb2, ciclo, turno);
+
+		// Ejecucion
+		universidad.agregarAula(aula);
+		Boolean agregarMateria = universidad.agregarMateria(pb2);
+		Boolean agregarCiclo = universidad.agregarCicloLectivo(ciclo);
+		Boolean agregarComision = universidad.agregarComision(comision);
+		Boolean asignarAula = universidad.asignarAulaAComision(idComision, idAula);
+
+		// Validacion
+		assertTrue(agregarMateria);
+		assertTrue(agregarCiclo);
+		assertTrue(agregarComision);
+		assertTrue(asignarAula);
+	}
+	
+	@Test
+	public void queNoSePuedaAsignarAulaAUnaComisionSiLaComisionNoExiste() {
+
+		// Preparacion
+		String nombre = "Unlam";
+		Universidad universidad = new Universidad(nombre);
+				
+		Integer cantidadDeLugares = 50;
+		Integer idAula = 1;
+		Aula aula = new Aula(idAula, cantidadDeLugares);
+		
+		Integer idComision = 1;
+		String turno = "mañana";
+		Comision comision = universidad.buscarComisionPorId(idComision);
+
+		// Ejecucion
+		universidad.agregarAula(aula);
+		Boolean asignarAula = universidad.asignarAulaAComision(idComision, idAula);
+
+		// Validacion
+		assertFalse(asignarAula);
+	}
+	
+//	@Test
+//	public void queSePuedaAsignarUnProfesorAUnaComision() {
+//
+//		// Preparacion
+//		String nombre = "Unlam";
+//		Universidad universidad = new Universidad(nombre);
+//		
+//		String nombre2 = "PB2";
+//		Integer codigo = 2;
+//		Materia pb2 = new Materia(nombre2, codigo);
+//		
+//		Integer idCiclo = 1;
+//		LocalDate fechaInicioCicloLectivo = LocalDate.of(2023, 8, 16);
+//		LocalDate fechaFinalizacionCicloLectivo = LocalDate.of(2023, 12, 4);
+//		LocalDate fechaInicioInscripcion = LocalDate.of(2023, 7, 25);
+//		LocalDate fechaFinalizacionInscripcion = LocalDate.of(2023, 7, 30);
+//		CicloLectivo ciclo = new CicloLectivo(idCiclo, fechaInicioCicloLectivo,fechaFinalizacionCicloLectivo,fechaInicioInscripcion,fechaFinalizacionInscripcion);
+//		
+//		Integer dni = 2243423;
+//		String nombreProfesor = "Juan";
+//		String apellidoProfesor = "Perez";
+//		Profesor profesor = new Profesor(dni, nombreProfesor, apellidoProfesor);
+//		
+//		Integer idComision = 1;
+//		String turno = "mañana";
+//		Comision comision = new Comision(idComision, pb2, ciclo, turno);
+//
+//		// Ejecucion
+//		Boolean agregarProfesor = universidad.agregarProfesor(profesor);
+//		Boolean agregarMateria = universidad.agregarMateria(pb2);
+//		Boolean agregarCiclo = universidad.agregarCicloLectivo(ciclo);
+//		Boolean agregarComision = universidad.agregarComision(comision);
+//		Boolean asignarProfesor = universidad.asignarProfesorAComision(idComision, dni);
+//
+//		// Validacion
+//		assertTrue(agregarProfesor);
+//		assertTrue(agregarMateria);
+//		assertTrue(agregarCiclo);
+//		assertTrue(agregarComision);
+//		assertTrue(asignarProfesor);
+//	}
 	@Test
 	public void queSePuedaRegistrarUnProfesor() {
 
@@ -388,4 +487,11 @@ public class TestUniversidad {
 		// Validacion
 		assertTrue(registroExitoso);
 	}
+	
+	
+	
+	
+	
+	
+	
 }
