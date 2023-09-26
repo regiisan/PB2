@@ -375,12 +375,45 @@ public class Universidad {
 //		return true;
 	}
 
-	public Nota obtenerNotaFinal(Integer dniAlumno, Integer idMateria) { // falta
-		ArrayList<ComisionAlumno> comisionesDelAlumno = getInscripcionesAcomision(dniAlumno);
-		
-		return null;
-	}
+	public Integer obtenerNotaFinal(Integer dniAlumno, Integer idComision) { 
+        
+        ComisionAlumno comisionDelAlumno = getInscripcionAcomision(dniAlumno, idComision);
+        Nota primerParcial = comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.PRIMER_PARCIAL);
+        Nota segundoParcial = comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.SEGUNDO_PARCIAL);
 
+        if (comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_PRIMER_PARCIAL).getValor() != null) {
+            primerParcial = comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_PRIMER_PARCIAL);
+        }
+        
+        if (comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_SEGUNDO_PARCIAL).getValor() != null) {
+            segundoParcial = comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_SEGUNDO_PARCIAL);
+        }
+
+        if (primerParcial.getValor() != null && segundoParcial.getValor() != null) {
+            Integer notaFinal = (primerParcial.getValor() + segundoParcial.getValor()) / 2;
+            return notaFinal;
+        }
+
+        return null;
+    }
+	
+	public ArrayList<Materia> obtenerMateriasQueFaltanCursarParaUnAlumno(Integer dniAlumno) {
+		ArrayList<Materia> materiasAprobadasDelAlumno = obtenerMateriasAprobadasParaUnAlumno(dniAlumno);
+		ArrayList<Materia> materiasFaltantes = new ArrayList<>();
+		
+		Alumno alumno = buscarAlumnoPorDni(dniAlumno);
+		
+		if (alumno != null) {
+			for(Materia materia : materias) {
+			if(!materiasAprobadasDelAlumno.contains(materia)) {
+				materiasFaltantes.add(materia);
+				}
+			}
+		}
+		return materiasFaltantes;
+	}
+		
+	
 	public ArrayList<Materia> obtenerMateriasAprobadasParaUnAlumno(Integer dniAlumno) {
 		ArrayList<ComisionAlumno> comisionesDelAlumno = getInscripcionesAcomision(dniAlumno);
 		ArrayList<Materia> materiasAprobadasDelAlumno = new ArrayList<>();
@@ -393,5 +426,5 @@ public class Universidad {
 		}
 		return materiasAprobadasDelAlumno;
 	}
-	
+
 }
