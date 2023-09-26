@@ -22,7 +22,14 @@ public class Universidad {
 		this.nombre = nombre;
 		this.alumnos = new ArrayList<Alumno>();
 		this.materias = new ArrayList<Materia>();
+		this.profesores = new ArrayList<Profesor>();
 		this.aulas = new ArrayList<Aula>();
+		this.ciclos = new ArrayList<CicloLectivo>();
+		this.comisiones = new ArrayList<Comision>();
+		this.comisionesAlumno = new ArrayList<ComisionAlumno>();
+		this.comisionesProfesor = new ArrayList<ComisionProfesor>();
+		this.materiasCorrelativas = new ArrayList<MateriaCorrelativa>();
+
 	}
 
 	public Boolean agregarAlumno(Alumno alumno) {
@@ -68,7 +75,7 @@ public class Universidad {
 		if (seSuperponen(ciclo)) {
 			return false;
 		}
-		return this.ciclos                    .add(ciclo);
+		return this.ciclos.add(ciclo);
 	}
 
 	private CicloLectivo buscarCicloPorId(Integer id) {
@@ -97,7 +104,7 @@ public class Universidad {
 	}
 
 	private boolean sePuedeAgregarComision(Comision comision) {
-		if (buscarComisionPorId(comision.getId()) == null) {
+		if (buscarComisionPorId(comision.getId()) != null) {
 			return false;
 		}
 		for (int i = 0; i < comisiones.size(); i++) {
@@ -155,8 +162,6 @@ public class Universidad {
 			}
 		}
 		return this.comisionesProfesor.add(new ComisionProfesor(idComision, dniProfesor));
-		// pongo el new xq no la habia creado todavia (aparte le estoy pasando dni y id, no el objeto)
-
 	}
 
 	public static Integer obtenerCantidadAlumnos(ArrayList<Alumno> alumnos) {
@@ -209,7 +214,14 @@ public class Universidad {
 		if (materia == null || correlativa == null) {
 			return false;
 		}
-		return this.materiasCorrelativas.remove(correlativa); // ver
+		
+		for (int i = 0; i < materiasCorrelativas.size(); i++) {
+	        if (materiasCorrelativas.get(i).getIdCorrelativa().equals(idCorrelativaAEliminar)) {
+	             materiasCorrelativas.remove(i);
+	             return true;
+	        }
+	}
+		return false;
 	}
 
 	private ArrayList<Materia> buscarMateriasCorrelativas(Integer idMateria) {
@@ -230,6 +242,8 @@ public class Universidad {
 		if (alumno == null || comision == null) {
 			return false;
 		}
+		
+
 
 		Integer cantidadDeLugaresMaximos = comision.getAula().getCantidadDeLugares();
 		Integer cantidadDeInscripos = obtenerCantidadDeInscriptosDeUnaComision(idComision);
@@ -339,6 +353,10 @@ public class Universidad {
 
 	public Nota obtenerNota(Integer dniAlumno, Integer idMateria) { // falta
 		ArrayList<ComisionAlumno> comisionesDelAlumno = getInscripcionesAcomision(dniAlumno);
+		
+		for(int i = 0;i<comisionesDelAlumno.size();i++) {
+			
+		}
 		return null;
 	}
 
