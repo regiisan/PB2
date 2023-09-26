@@ -64,6 +64,20 @@ public class ComisionAlumno {
 		
 		return true;
 	}
+	
+	public int obtenerNota() {
+		int notaFinal;
+		
+		Nota primerParcial = buscarNotaPorTipo(TipoDeNota.PRIMER_PARCIAL);
+		
+		Nota segundoParcial = buscarNotaPorTipo(TipoDeNota.SEGUNDO_PARCIAL);
+		
+		notaFinal = (primerParcial.getValor() + segundoParcial.getValor()) /2;
+		
+		return notaFinal;
+	}
+	
+	
 
 	public Nota buscarNotaPorTipo(TipoDeNota tipoDeNota) {
 		for (int i = 0; i < this.notas.size(); i++) {

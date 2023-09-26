@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 public class Universidad {
 
@@ -147,7 +148,8 @@ public class Universidad {
 		if (!existeProfesor(dniProfesor) || !existeComision(idComision)) {
 			return false;
 		}
-
+		
+		
 		for (int i = 0; i < this.comisionesProfesor.size(); i++) {
 			if (comisionesProfesor.get(i).getDniProfesor().equals(dniProfesor)) {
 				if (buscarComisionPorId(idComision).equals(comisionesProfesor.get(i).getIdComision()))
@@ -155,12 +157,38 @@ public class Universidad {
 			}
 		}
 		return this.comisionesProfesor.add(new ComisionProfesor(idComision, dniProfesor));
-		// pongo el new xq no la habia creado todavia (aparte le estoy pasando dni y id, no el objeto)
+		
 
 	}
 
 	public static Integer obtenerCantidadAlumnos(ArrayList<Alumno> alumnos) {
 		return alumnos.size();
+	}
+	
+	public Integer obtenerCantidadAlumnosPorComision(Integer idComision) {
+		
+		Integer cantidadAlumnos = 0;
+        for (int i = 0; i < this.comisionesAlumno.size(); i++) {
+            if (comisionesAlumno.get(i).getIdComision().equals(idComision)) {
+                    cantidadAlumnos++;
+                    }
+            }
+        return cantidadAlumnos;
+	}
+	
+	public Boolean haceFaltaOtroProfesor(Integer idComision) {
+		
+		if(obtenerCantidadAlumnosPorComision(idComision) > 20) {
+			
+			Random random = new Random();
+	        int indiceAleatorio = random.nextInt(profesores.size());
+	        Profesor profesorAleatorio = profesores.get(indiceAleatorio);
+	        Integer dniAleatorio = profesorAleatorio.getDni();
+	        
+			asignarProfesorAComision(idComision, dniAleatorio);
+			return true;
+		}
+		return false;
 	}
 
 	public void agregarAula(Aula aula) {
@@ -230,6 +258,9 @@ public class Universidad {
 		if (alumno == null || comision == null) {
 			return false;
 		}
+		
+		if(!tieneCorrelativasAprobadas(idComision, dniAlumno))
+			return false;
 
 		Integer cantidadDeLugaresMaximos = comision.getAula().getCantidadDeLugares();
 		Integer cantidadDeInscripos = obtenerCantidadDeInscriptosDeUnaComision(idComision);
@@ -255,6 +286,13 @@ public class Universidad {
 				}
 			}
 		}
+		
+		for(int i = 0; i <obtenerMateriasAprobadasParaUnAlumno(dniAlumno).size(); i++) {
+			if(obtenerMateriasAprobadasParaUnAlumno(dniAlumno).get(i).equals(comision.getMateria())){
+				return false;
+			}
+		}
+		
 		return this.comisionesAlumno.add(new ComisionAlumno(dniAlumno, idComision));
 	}
 
@@ -337,8 +375,9 @@ public class Universidad {
 //		return true;
 	}
 
-	public Nota obtenerNota(Integer dniAlumno, Integer idMateria) { // falta
+	public Nota obtenerNotaFinal(Integer dniAlumno, Integer idMateria) { // falta
 		ArrayList<ComisionAlumno> comisionesDelAlumno = getInscripcionesAcomision(dniAlumno);
+		
 		return null;
 	}
 
@@ -354,4 +393,5 @@ public class Universidad {
 		}
 		return materiasAprobadasDelAlumno;
 	}
+	
 }
