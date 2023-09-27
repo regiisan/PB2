@@ -5,8 +5,9 @@ public class Nota {
 	private Integer valor;
 	private TipoDeNota tipoDeNota;
 
-	public Nota() {
-
+	public Nota(Integer valor, TipoDeNota tipoDeNota) {
+		this.valor = valor;
+		this.tipoDeNota = tipoDeNota;
 	}
 
 	public Integer getValor() {
@@ -24,6 +25,8 @@ public class Nota {
 	public void setTipoDeNota(TipoDeNota tipoParcial) {
 		this.tipoDeNota = tipoParcial;
 	}
+	
+	
 	
 	
 

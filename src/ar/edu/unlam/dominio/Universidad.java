@@ -88,13 +88,16 @@ public class Universidad {
 		return null;
 	}
 
-	public Boolean seSuperponen(CicloLectivo ciclo) {
+	public Boolean seSuperponen(CicloLectivo cicloIngresado) {
+
 		for (int i = 0; i < this.ciclos.size(); i++) {
-			if (ciclos.get(i).getFechaInicioCicloLectivo().isBefore(ciclo.getFechaFinalizacionCicloLectivo())
-					|| ciclos.get(i).getFechaFinalizacionCicloLectivo().isAfter(ciclo.getFechaInicioCicloLectivo())) {
-				return true;
+			if ((cicloIngresado.getFechaInicioCicloLectivo().isAfter(ciclos.get(i).getFechaInicioCicloLectivo())
+					|| cicloIngresado.getFechaFinalizacionCicloLectivo().isAfter(ciclos.get(i).getFechaInicioCicloLectivo()))
+				&& (cicloIngresado.getFechaInicioCicloLectivo().isBefore(ciclos.get(i).getFechaFinalizacionCicloLectivo())
+						|| cicloIngresado.getFechaFinalizacionCicloLectivo().isBefore(ciclos.get(i).getFechaFinalizacionCicloLectivo()))) {
+					return true;
+				}
 			}
-		}
 		return false;
 	}
 
@@ -117,10 +120,6 @@ public class Universidad {
 			}
 		}
 		return true;
-	}
-
-	public boolean existeComision(Integer idComision) {
-		return this.comisiones.contains(idComision);
 	}
 
 	public Comision buscarComisionPorId(Integer id) {
@@ -148,12 +147,8 @@ public class Universidad {
 		return null;
 	}
 
-	public boolean existeProfesor(Integer dniProfesor) {
-		return this.profesores.contains(dniProfesor);
-	}
-
 	public Boolean asignarProfesorAComision(Integer idComision, Integer dniProfesor) {
-		if (!existeProfesor(dniProfesor) || !existeComision(idComision)) {
+		if (buscarProfesorPorDni(dniProfesor) == null || buscarComisionPorId(idComision) == null) {
 			return false;
 		}
 		for (int i = 0; i < this.comisionesProfesor.size(); i++) {
@@ -165,30 +160,15 @@ public class Universidad {
 		return this.comisionesProfesor.add(new ComisionProfesor(idComision, dniProfesor));
 	}
 
-	public static Integer obtenerCantidadAlumnos(ArrayList<Alumno> alumnos) {
-		return alumnos.size();
-	}
-	
-	public Integer obtenerCantidadAlumnosPorComision(Integer idComision) {
-		
-		Integer cantidadAlumnos = 0;
-        for (int i = 0; i < this.comisionesAlumno.size(); i++) {
-            if (comisionesAlumno.get(i).getIdComision().equals(idComision)) {
-                    cantidadAlumnos++;
-                    }
-            }
-        return cantidadAlumnos;
-	}
-	
 	public Boolean haceFaltaOtroProfesor(Integer idComision) {
-		
-		if(obtenerCantidadAlumnosPorComision(idComision) > 20) {
-			
+
+		if (obtenerCantidadDeInscriptosDeUnaComision(idComision) > 20) {
+
 			Random random = new Random();
-	        int indiceAleatorio = random.nextInt(profesores.size());
-	        Profesor profesorAleatorio = profesores.get(indiceAleatorio);
-	        Integer dniAleatorio = profesorAleatorio.getDni();
-	        
+			int indiceAleatorio = random.nextInt(profesores.size());
+			Profesor profesorAleatorio = profesores.get(indiceAleatorio);
+			Integer dniAleatorio = profesorAleatorio.getDni();
+
 			asignarProfesorAComision(idComision, dniAleatorio);
 			return true;
 		}
@@ -219,7 +199,7 @@ public class Universidad {
 
 		if (comision != null && aula != null) {
 			comision.setAula(aula);
-			asignado = true; 
+			asignado = true;
 		}
 		return asignado;
 	}
@@ -262,17 +242,20 @@ public class Universidad {
 		return idCorrelativas;
 	}
 
-	public Boolean inscribirAlumnoAComision(Integer dniAlumno, Integer idComision) {
+	public Boolean inscribirAlumnoAComision(Integer dniAlumno, Integer idComision, LocalDate fechaActual) {
 		Alumno alumno = buscarAlumnoPorDni(dniAlumno);
 		Comision comision = buscarComisionPorId(idComision);
+		ArrayList<Materia> materiasCorrelativas = buscarMateriasCorrelativas(comision.getMateria().getCodigo());
 
 		if (alumno == null || comision == null) {
 			return false;
 		}
-		
-		if(!tieneCorrelativasAprobadas(idComision, dniAlumno))
-			return false;
 
+		if(materiasCorrelativas!=null) {
+			if (!tieneCorrelativasAprobadas(idComision, dniAlumno))
+			return false;
+		}
+		
 		Integer cantidadDeLugaresMaximos = comision.getAula().getCantidadDeLugares();
 		Integer cantidadDeInscripos = obtenerCantidadDeInscriptosDeUnaComision(idComision);
 
@@ -281,8 +264,7 @@ public class Universidad {
 		}
 
 		LocalDate fechaInicioInscripcion = comision.getCicloLectivo().getFechaInicioInscripcion();
-		LocalDate fechaFinInscripcion = comision.getCicloLectivo().getFechaFinalizacionCicloLectivo();
-		LocalDate fechaActual = LocalDate.now();
+		LocalDate fechaFinInscripcion = comision.getCicloLectivo().getFechaFinalizacionInscripcion();
 
 		if (fechaActual.isBefore(fechaInicioInscripcion) || fechaActual.isAfter(fechaFinInscripcion)) {
 			return false;
@@ -297,17 +279,17 @@ public class Universidad {
 				}
 			}
 		}
-		
-		for(int i = 0; i <obtenerMateriasAprobadasParaUnAlumno(dniAlumno).size(); i++) {
-			if(obtenerMateriasAprobadasParaUnAlumno(dniAlumno).get(i).equals(comision.getMateria())){
+
+		for (int i = 0; i < obtenerMateriasAprobadasParaUnAlumno(dniAlumno).size(); i++) {
+			if (obtenerMateriasAprobadasParaUnAlumno(dniAlumno).get(i).equals(comision.getMateria())) {
 				return false;
 			}
 		}
-		
+
 		return this.comisionesAlumno.add(new ComisionAlumno(dniAlumno, idComision));
 	}
 
-	private ComisionAlumno getInscripcionAcomision(Integer dniAlumno, Integer idComision) {
+	public ComisionAlumno getInscripcionAcomision(Integer dniAlumno, Integer idComision) {
 		for (int i = 0; i < comisionesAlumno.size(); i++) {
 			if (this.comisionesAlumno.get(i).getDniAlumno().equals(dniAlumno)
 					&& this.comisionesAlumno.get(i).getIdComision().equals(idComision)) {
@@ -341,16 +323,13 @@ public class Universidad {
 
 	public Boolean registrarNota(Integer idComision, Integer dniAlumno, Nota nota) {
 		ComisionAlumno comisionAlumno = getInscripcionAcomision(idComision, dniAlumno);
+		Comision comision = buscarComisionPorId(idComision);
 
 		if (comisionAlumno == null) {
 			return false;
 		}
 
 		if (nota.getValor() < 1 || nota.getValor() > 10) {
-			return false;
-		}
-
-		if (nota.getValor() >= 7 && !tieneCorrelativasAprobadas(idComision, dniAlumno)) {
 			return false;
 		}
 
@@ -374,12 +353,18 @@ public class Universidad {
 		Comision comisionAprobada = buscarComisionPorId(idComision);
 		ArrayList<Materia> materiasAprobadas = obtenerMateriasAprobadasParaUnAlumno(dniAlumno);
 		ArrayList<Materia> materiasCorrelativas = buscarMateriasCorrelativas(comisionAprobada.getMateria().getCodigo());
-
-		return materiasAprobadas.containsAll(materiasCorrelativas);
+		
+		for(int i = 0; i < materiasCorrelativas.size(); i++) {
+			Materia materiaCorrelativa = materiasCorrelativas.get(i);
+			if(!materiasAprobadas.contains(materiaCorrelativa)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
-	public Integer obtenerNotaFinal(Integer dniAlumno, Integer idComision) { 
-		
+	public Integer obtenerNotaFinal(Integer dniAlumno, Integer idComision) {
+
 		ComisionAlumno comisionDelAlumno = getInscripcionAcomision(dniAlumno, idComision);
 		Nota primerParcial = comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.PRIMER_PARCIAL);
 		Nota segundoParcial = comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.SEGUNDO_PARCIAL);
@@ -387,7 +372,7 @@ public class Universidad {
 		if (comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_PRIMER_PARCIAL).getValor() != null) {
 			primerParcial = comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_PRIMER_PARCIAL);
 		}
-		
+
 		if (comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_SEGUNDO_PARCIAL).getValor() != null) {
 			segundoParcial = comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_SEGUNDO_PARCIAL);
 		}
@@ -399,25 +384,23 @@ public class Universidad {
 
 		return null;
 	}
-        
 
 	public ArrayList<Materia> obtenerMateriasQueFaltanCursarParaUnAlumno(Integer dniAlumno) {
 		ArrayList<Materia> materiasAprobadasDelAlumno = obtenerMateriasAprobadasParaUnAlumno(dniAlumno);
 		ArrayList<Materia> materiasFaltantes = new ArrayList<>();
-		
+
 		Alumno alumno = buscarAlumnoPorDni(dniAlumno);
-		
+
 		if (alumno != null) {
-			for(Materia materia : materias) {
-			if(!materiasAprobadasDelAlumno.contains(materia)) {
-				materiasFaltantes.add(materia);
+			for (Materia materia : materias) {
+				if (!materiasAprobadasDelAlumno.contains(materia)) {
+					materiasFaltantes.add(materia);
 				}
 			}
 		}
 		return materiasFaltantes;
 	}
-		
-	
+
 	public ArrayList<Materia> obtenerMateriasAprobadasParaUnAlumno(Integer dniAlumno) {
 		ArrayList<ComisionAlumno> comisionesDelAlumno = getInscripcionesAcomision(dniAlumno);
 		ArrayList<Materia> materiasAprobadasDelAlumno = new ArrayList<>();
@@ -426,7 +409,6 @@ public class Universidad {
 			if (comisionesDelAlumno.get(i).isAprobada()) {
 				Comision comisionAprobada = buscarComisionPorId(comisionesDelAlumno.get(i).getIdComision());
 				materiasAprobadasDelAlumno.add(comisionAprobada.getMateria());
-		
 			}
 		}
 		return materiasAprobadasDelAlumno;

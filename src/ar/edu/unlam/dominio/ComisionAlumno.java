@@ -41,43 +41,29 @@ public class ComisionAlumno {
 	public boolean isAprobada() {
 		Nota primerParcial = buscarNotaPorTipo(TipoDeNota.PRIMER_PARCIAL);
 		Nota segundoParcial = buscarNotaPorTipo(TipoDeNota.SEGUNDO_PARCIAL);
-		
+
 		if (primerParcial == null || segundoParcial == null) {
 			return false;
 		}
-		
+
 		if (primerParcial.getValor() < 4) {
 			primerParcial = buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_PRIMER_PARCIAL);
 		}
-		
+
 		if (segundoParcial.getValor() < 4) {
 			segundoParcial = buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_SEGUNDO_PARCIAL);
 		}
-		
+
 		if (primerParcial == null || segundoParcial == null) {
 			return false;
 		}
-		
-		if (primerParcial.getValor() < 4 || segundoParcial.getValor() < 4 ) {
+
+		if (primerParcial.getValor() < 4 || segundoParcial.getValor() < 4) {
 			return false;
 		}
-		
-		return true;
+
+		return true; 
 	}
-	
-	public int obtenerNota() {
-		int notaFinal;
-		
-		Nota primerParcial = buscarNotaPorTipo(TipoDeNota.PRIMER_PARCIAL);
-		
-		Nota segundoParcial = buscarNotaPorTipo(TipoDeNota.SEGUNDO_PARCIAL);
-		
-		notaFinal = (primerParcial.getValor() + segundoParcial.getValor()) /2;
-		
-		return notaFinal;
-	}
-	
-	
 
 	public Nota buscarNotaPorTipo(TipoDeNota tipoDeNota) {
 		for (int i = 0; i < this.notas.size(); i++) {
