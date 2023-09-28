@@ -154,27 +154,52 @@ public class Universidad {
 		for (int i = 0; i < this.comisionesProfesor.size(); i++) {
 			if (comisionesProfesor.get(i).getDniProfesor().equals(dniProfesor)) {
 				if (buscarComisionPorId(idComision).equals(comisionesProfesor.get(i).getIdComision()))
-					return false; // falta
+					return false;
 			}
 		}
-		return this.comisionesProfesor.add(new ComisionProfesor(idComision, dniProfesor));
+		
+		this.comisionesProfesor.add(new ComisionProfesor(idComision, dniProfesor));
+		
+		return agregarOtroProfesorSiHaceFalta(dniProfesor, idComision);
 	}
 
-	public Boolean haceFaltaOtroProfesor(Integer idComision) {
-
-		if (obtenerCantidadDeInscriptosDeUnaComision(idComision) > 20) {
-
+	public Boolean agregarOtroProfesorSiHaceFalta(Integer dniProfesor, Integer idComision) {
+		if (obtenerCantidadDeInscriptosDeUnaComision(idComision) > 20 && obtenerCantidadDeProfesoresEnComision(idComision) < 2) {
+			if (profesores.size() < 2) {
+				return false;
+			}
+			
+			ArrayList<Profesor> profesoresDisponibles = new ArrayList<>();
+			for (int i = 0; i < profesores.size(); i++) {
+				if(!profesores.get(i).getDni().equals(dniProfesor)) {
+					profesoresDisponibles.add(profesores.get(i));
+				}
+			}
+			
 			Random random = new Random();
-			int indiceAleatorio = random.nextInt(profesores.size());
+			int indiceAleatorio = random.nextInt(profesoresDisponibles.size());
 			Profesor profesorAleatorio = profesores.get(indiceAleatorio);
 			Integer dniAleatorio = profesorAleatorio.getDni();
 
-			asignarProfesorAComision(idComision, dniAleatorio);
+			this.comisionesProfesor.add(new ComisionProfesor(idComision, dniProfesor));
+			
 			return true;
 		}
-		return false;
+		return true;
 	}
-
+ 
+	public Integer obtenerCantidadDeProfesoresEnComision(Integer idComision) {
+		int cantidad = 0;
+		
+		for (int i = 0; i < comisionesProfesor.size(); i++) {
+			if(comisionesProfesor.get(i).getIdComision().equals(idComision)) {
+				cantidad++;
+			}
+		}
+		
+		return cantidad;
+	}
+	
 	public void agregarAula(Aula aula) {
 		this.aulas.add(aula);
 	}
@@ -299,7 +324,7 @@ public class Universidad {
 		return null;
 	}
 
-	private ArrayList<ComisionAlumno> getInscripcionesAcomision(Integer dniAlumno) {
+	public ArrayList<ComisionAlumno> getInscripcionesAcomision(Integer dniAlumno) {
 		ArrayList<ComisionAlumno> resultado = new ArrayList<>();
 
 		for (int i = 0; i < comisionesAlumno.size(); i++) {

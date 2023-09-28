@@ -11,11 +11,10 @@ public class Comision {
 	private Aula aula;
 	private String turno;
 	
-	public Comision(Integer id, Materia materia, CicloLectivo cicloLectivo, String turno) { // ver
+	public Comision(Integer id, Materia materia, CicloLectivo cicloLectivo, String turno) {
 		this.id = id;
 		this.materia = materia;
 		this.cicloLectivo = cicloLectivo;
-		this.aula = aula;
 		this.turno = turno;
 	}
 	
