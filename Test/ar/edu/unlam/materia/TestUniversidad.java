@@ -1146,6 +1146,72 @@ public class TestUniversidad {
 		assertEquals(ve, vo);
 	}
 	
+	@Test
+	public void queNoSePuedaObtenerNotaFinalDeUnaMateriaDeUnAlumnoPorNoTenerPrimerOSegundoParcial() {
+ 
+		LocalDate fechaActual = LocalDate.of(2023, 9, 26);
+		
+		String nombre = "Unlam";
+		Universidad universidad = new Universidad(nombre);
+
+		String nombreAlumno = "Franco";
+		String apellido = "Coppola";
+		Integer dni = 44870226;
+		Alumno alumno = new Alumno(dni, nombreAlumno, apellido);
+		
+		String nombreMateria = "PB1";
+		Integer codigoMateria = 2;
+		Materia pb1 = new Materia(nombreMateria, codigoMateria);
+
+		Integer idCiclo = 1;
+		LocalDate fechaInicioCicloLectivo = LocalDate.of(2023, 10, 11);
+		LocalDate fechaFinalizacionCicloLectivo = LocalDate.of(2023, 12, 4);
+		LocalDate fechaInicioInscripcion = LocalDate.of(2023, 9, 25);
+		LocalDate fechaFinalizacionInscripcion = LocalDate.of(2023, 10, 10);
+		CicloLectivo ciclo = new CicloLectivo(idCiclo, fechaInicioCicloLectivo, fechaFinalizacionCicloLectivo,
+				fechaInicioInscripcion, fechaFinalizacionInscripcion);
+
+		Integer cantidadDeLugares = 50;
+		Integer idAula = 1;
+		Aula aula = new Aula(idAula, cantidadDeLugares);
+
+		Integer idComision = 1;
+		String turno = "mañana";
+		Comision comision = new Comision(idComision, pb1, ciclo, turno);
+
+		Integer valor = 10;
+		Integer valor2 = 7;
+		TipoDeNota tipo = TipoDeNota.PRIMER_PARCIAL;
+		TipoDeNota tipo2 = TipoDeNota.SEGUNDO_PARCIAL;
+		Nota nota1P = new Nota(valor, tipo);
+		Nota nota2P = new Nota(valor2, tipo2);
+
+
+		// Ejecucion
+		Boolean agregarMateria = universidad.agregarMateria(pb1);
+		Boolean agregarAlumno = universidad.agregarAlumno(alumno);
+		Boolean agregarCiclo = universidad.agregarCicloLectivo(ciclo);
+		Boolean agregarComision = universidad.agregarComision(comision);
+		universidad.agregarAula(aula);
+		Boolean asignarAula = universidad.asignarAulaAComision(idComision, idAula);
+		Boolean inscribirAlumno = universidad.inscribirAlumnoAComision(dni, idComision, fechaActual);
+		Boolean registrarNota1P = universidad.registrarNota(idComision, dni, nota1P);
+		
+		Integer ve = 8;
+		Integer vo = universidad.obtenerNotaFinal(dni, idComision);
+		
+		// Validacion
+		assertTrue(agregarMateria);
+		assertTrue(agregarAlumno);
+		assertTrue(agregarCiclo);
+		assertTrue(agregarComision);
+		assertTrue(asignarAula);
+		assertTrue(inscribirAlumno);
+		assertTrue(registrarNota1P);
+		
+		assertNull(vo);
+	}
+	
 	
 	
 	

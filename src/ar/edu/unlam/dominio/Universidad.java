@@ -369,15 +369,15 @@ public class Universidad {
 		Nota primerParcial = comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.PRIMER_PARCIAL);
 		Nota segundoParcial = comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.SEGUNDO_PARCIAL);
 
-		if (comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_PRIMER_PARCIAL).getValor() != null) {
+		if (comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_PRIMER_PARCIAL) != null) {
 			primerParcial = comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_PRIMER_PARCIAL);
 		}
 
-		if (comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_SEGUNDO_PARCIAL).getValor() != null) {
+		if (comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_SEGUNDO_PARCIAL) != null) {
 			segundoParcial = comisionDelAlumno.buscarNotaPorTipo(TipoDeNota.RECUPERATORIO_SEGUNDO_PARCIAL);
 		}
 
-		if (primerParcial.getValor() != null && segundoParcial.getValor() != null) {
+		if (primerParcial != null && segundoParcial != null) {
 			Integer notaFinal = (primerParcial.getValor() + segundoParcial.getValor()) / 2;
 			return notaFinal;
 		}
