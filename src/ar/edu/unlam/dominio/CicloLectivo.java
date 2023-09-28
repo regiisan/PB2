@@ -19,12 +19,6 @@ public class CicloLectivo {
 		this.fechaInicioInscripcion = fechaInicioInscripcion;
 		this.fechaFinalizacionInscripcion = fechaFinalizacionInscripcion;
 	}
-
-	
-//	public boolean seSuperpone(CicloLectivo nuevoCiclo) {
-//	    return (nuevoCiclo.getFechaInicioCicloLectivo().isBefore(fechaFinalizacionCicloLectivo) || nuevoCiclo.getFechaInicioCicloLectivo().isEqual(fechaFinalizacionCicloLectivo))
-//	        && (nuevoCiclo.getFechaFinalizacionCicloLectivo().isAfter(fechaInicioCicloLectivo) || nuevoCiclo.getFechaFinalizacionCicloLectivo().isEqual(fechaInicioCicloLectivo));
-//	}
 	
 	public Integer getId() {
 		return id;
