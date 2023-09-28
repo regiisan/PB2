@@ -290,7 +290,7 @@ public class Universidad {
 	}
 
 	public ComisionAlumno getInscripcionAcomision(Integer dniAlumno, Integer idComision) {
-		for (int i = 0; i < comisionesAlumno.size(); i++) {
+		for (int i = 0; i < this.comisionesAlumno.size(); i++) {
 			if (this.comisionesAlumno.get(i).getDniAlumno().equals(dniAlumno)
 					&& this.comisionesAlumno.get(i).getIdComision().equals(idComision)) {
 				return this.comisionesAlumno.get(i);
@@ -322,7 +322,7 @@ public class Universidad {
 	}
 
 	public Boolean registrarNota(Integer idComision, Integer dniAlumno, Nota nota) {
-		ComisionAlumno comisionAlumno = getInscripcionAcomision(idComision, dniAlumno);
+		ComisionAlumno comisionAlumno = getInscripcionAcomision(dniAlumno, idComision);
 		Comision comision = buscarComisionPorId(idComision);
 
 		if (comisionAlumno == null) {

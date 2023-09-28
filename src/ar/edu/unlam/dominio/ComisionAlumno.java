@@ -8,7 +8,7 @@ public class ComisionAlumno {
 	private Integer dniAlumno;
 	private ArrayList<Nota> notas;
 
-	public ComisionAlumno(Integer idComision, Integer dniAlumno) {
+	public ComisionAlumno(Integer dniAlumno, Integer idComision) {
 		this.idComision = idComision;
 		this.dniAlumno = dniAlumno;
 		this.notas = new ArrayList<>();
